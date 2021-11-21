@@ -29,8 +29,8 @@ void populate(char randomString[], int size);
 
 int main(){
     srand(time (NULL));          //seeds random using current time, call once only
-    int max_sample_size = 50000;    //control variable for test cases
-    int i = 1000;                 
+    int max_sample_size = 25;    //control variable for test cases
+    int i = 10;                 
     int LCS_length = 0;
     
     while (i <= max_sample_size){
@@ -47,11 +47,11 @@ int main(){
         cout << "LCS length is " << LCS_length << " characters long." << endl;
 
         cout << "Sample Size [" << i << "] ";
-        cout << "Elapsed time in nanoseconds: ";
-        cout << chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+        cout << "Elapsed time in milliseconds: ";
+        cout << chrono::duration_cast<chrono::milliseconds>(end - start).count();
         cout << endl;
         
-        i += 1000;
+        i += 1;
     }
     return 0;
 }
@@ -60,7 +60,7 @@ int main(){
 void populate(char randomString[], int size){
     int random = rand();
     random_device rd;
-    mt19937 gen(rd());                          //best case no random, worst case no match, avg use random
+    mt19937 gen(rd() * random);                          //best case no random, worst case no match, avg use random
     uniform_int_distribution<> distr(65, 90);   //65-90 is the ASCII for A-Z
     
     for (int i = 0; i < size; i++){
@@ -68,12 +68,10 @@ void populate(char randomString[], int size){
     }
 
     //display array
-    /*
     for (int i = 0; i< size; i++){
         cout << randomString[i];
     }
     cout << endl;
-    */
     return;
 }
 
