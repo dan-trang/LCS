@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <vector>
 using namespace std;
 
 
@@ -30,19 +31,25 @@ void populate(char randomString[], int size);
 
 int main(){
     srand(time (NULL));          //seeds random using current time, call once only
-    int max_sample_size = 25;    //control variable for test cases
-    int i = 10;                 
+    int max_sample_size = 40000;    //control variable for test cases
+    int i = 1000;                 
     int LCS_length = 0;
     
     while (i <= max_sample_size){
-        char A[i];           //to contain random string 1
-        char B[i];           //to contain random string 2
+        //char A[i];           //to contain random string 1
+        //char B[i];           //to contain random string 2
 
-        populate(A, i);
-        populate(B, i);
+        //populate(A, i);
+        //populate(B, i);
+
+        char A[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+        char B[] = {'Z', 'Y', 'X', 'W', 'V', 'U', 'T', 'S', 'R', 'Q', 'P', 'O',
+            'N', 'M', 'L', 'K', 'J', 'I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A'};
 
         auto start = chrono::steady_clock::now();
         LCS_length = LCS(A, B, i, i);               //i used for both A and B
+        //LCS_length = LCS_dynamic(A, B, i, i);
         auto end = chrono::steady_clock::now();
 
         cout << "LCS length is " << LCS_length << " characters long." << endl;
@@ -52,7 +59,7 @@ int main(){
         cout << chrono::duration_cast<chrono::milliseconds>(end - start).count();
         cout << endl;
         
-        i += 1;
+        i += 1000;
     }
     return 0;
 }
@@ -69,10 +76,12 @@ void populate(char randomString[], int size){
     }
 
     //display array
+    /*
     for (int i = 0; i< size; i++){
         cout << randomString[i];
     }
     cout << endl;
+    */
     return;
 }
 
@@ -91,23 +100,21 @@ int LCS(char * A, char * B, int a, int b){
 }
 
 int LCS_dynamic(char * A, char * B, int a, int b){
-    int C[a+1][b+1];
-    for (int i = 0; i < b; i++){    //Initialize first row and column to 0
-        C[0][i] = 0;
-        C[i][0] = 0;
-    }
-    for (int i = 0; i < a; i++){
-        for (int j = 0; j < b; j++){
-            if (A[i] == B[j]){
-                C[i][j] = C[i-1][j-1] + 1;
+    //int table[a+1][b+1] = {0};
+    vector<vector<int>> table(a+1, vector<int> (b+1, 0));
+
+    for (int i = 0; i <= a; i++){
+        for (int j = 0; j <= b; j++){
+            if (i == 0 || j == 0){
+                table[i][j] = 0;
             }
-            else if (C[i][j-1] > C[i-1][j]){
-                C[i][j] = C[i][j-1];
+            else if (A[i-1] == B[j-1]){
+                table[i][j] = table[i-1][j-1] + 1;
             }
-            else {//if (C[i][j-1] <= C[i-1][j])
-                C[i][j] = C[i-1][j];
+            else{
+               table[i][j] = max(table[i-1][j], table[i][j-1]);
             }
         }
     }
-    return C[a][b];
+    return table[a][b];
 }
