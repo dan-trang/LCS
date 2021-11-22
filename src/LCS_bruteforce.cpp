@@ -25,6 +25,7 @@ using namespace std;
 
 ///// BRUTE FORCE METHOD /////
 int LCS(char * A, char * B, int a, int b);
+int LCS_dynamic(char * A, char * B, int a, int b);
 void populate(char randomString[], int size);
 
 int main(){
@@ -87,4 +88,26 @@ int LCS(char * A, char * B, int a, int b){
     else{
         return max(LCS(A, B, a, b-1), LCS (A, B, a-1, b));
     }
+}
+
+int LCS_dynamic(char * A, char * B, int a, int b){
+    int C[a+1][b+1];
+    for (int i = 0; i < b; i++){    //Initialize first row and column to 0
+        C[0][i] = 0;
+        C[i][0] = 0;
+    }
+    for (int i = 0; i < a; i++){
+        for (int j = 0; j < b; j++){
+            if (A[i] == B[j]){
+                C[i][j] = C[i-1][j-1] + 1;
+            }
+            else if (C[i][j-1] > C[i-1][j]){
+                C[i][j] = C[i][j-1];
+            }
+            else {//if (C[i][j-1] <= C[i-1][j])
+                C[i][j] = C[i-1][j];
+            }
+        }
+    }
+    return C[a][b];
 }
